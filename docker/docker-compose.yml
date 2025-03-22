@@ -33,7 +33,7 @@ services:
       dockerfile: middleware-service/Dockerfile
     container_name: middleware-service
     ports:
-      - "8081:8080"
+      - "8081:8081"
     environment:
       - TRANSACTION_API_URL=https://trxapitest.credable.io/service/transactionWsdl.wsdl
       - SCORING_CLIENT_API_URL=https://scoringtest.credable.io/api/v1/client/createClient

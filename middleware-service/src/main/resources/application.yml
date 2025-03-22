@@ -1,22 +1,64 @@
+# Server Configuration
 server:
-  port: 8080
+  port: 8081
+  context-path: /middleware-service
+
+# Spring Application Configuration
 spring:
   application:
     name: middleware-service
+    version: 1.0
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/lms}
 
-# External APIs
+# External API Configuration
+# Transaction API for financial data
 transaction:
   api:
     url: ${TRANSACTION_API_URL:https://trxapitest.credable.io/service/transactionWsdl.wsdl}
+
+# Scoring Service Configuration
 scoring:
-  middleware-endpoint:  ${SCORING_CLIENT_API_URL:https://scoringtest.credable.io/api/v1/client/createClient}
+  middleware-endpoint: ${SCORING_CLIENT_API_URL:https://scoringtest.credable.io/api/v1/client/createClient}
   service-name: Loan Management Middleware
   basic-auth-username: middleware-service
   basic-auth-password: strong-secure-password
   client:
     api:
-      url: ${SCORING_CLIENT_API_URL:https://scoringtest.credable.io/api/v1/client/createClient}
+      url: ${SCORING_CLIENT_API_URL:https://scoringtest.credable.io}
 
+# Logging Configuration
 logging:
   level:
     root: WARN
+    com.credable.middleware: DEBUG
+
+# OpenAPI/Swagger Configuration
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    disable-swagger-default-url: true
+  show-actuator: true
+  server:
+    url: http://localhost:8081
+  packages-to-scan: com.credable.app.middleware_service.controller
+
+# Additional OpenAPI Information
+openapi:
+  info:
+    title: ${spring.application.name} API
+    description: API Documentation for ${spring.application.name}
+    version: ${spring.application.version}
+    terms-of-service: https://credable.com/terms
+    contact:
+      name: Credable Development Team
+      email: team@credable.com
+      url: https://example.com/contact
+    license:
+      name: Apache 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0

@@ -5,6 +5,7 @@ server:
 spring:
   application:
     name: lms-service
+    version: 1.0
   data:
     mongodb:
       uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/lms}
@@ -17,4 +18,42 @@ scoring:
   score-threshold: 50
   api:
     url: ${SCORING_API_URL:https://scoringtest.credable.io/api/v1}
+
+
+
+
+# Logging Configuration
+logging:
+  level:
+    root: WARN
+    com.credable.middleware: DEBUG
+
+# OpenAPI/Swagger Configuration
+springdoc:
+  api-docs:
+    path: /v1/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    disable-swagger-default-url: true
+  show-actuator: true
+  server:
+    url: http://localhost:8080
+  packages-to-scan: com.credable.app.lms_service.controller
+
+# Additional OpenAPI Information
+openapi:
+  info:
+    title: ${spring.application.name} API
+    description: API Documentation for ${spring.application.name}
+    version: ${spring.application.version}
+    terms-of-service: https://credable.com/terms
+    contact:
+      name: Credable Development Team
+      email: team@credable.com
+      url: https://example.com/contact
+    license:
+      name: Apache 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
 
