@@ -1,8 +1,8 @@
 package com.credable.app.middleware_service.controller;
 
+import com.credable.app.middleware_service.model.TransactionRequest;
+import com.credable.app.middleware_service.model.TransactionResponse;
 import com.credable.app.middleware_service.service.TransactionService;
-import com.credable.app.shared.model.TransactionRequest;
-import com.credable.app.shared.model.TransactionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

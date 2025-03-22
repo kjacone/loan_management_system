@@ -1,4 +1,4 @@
-package com.credable.app.shared.model;
+package com.credable.app.lms_service.model;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

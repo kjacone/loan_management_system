@@ -1,21 +1,19 @@
 package com.credable.app.middleware_service.client;
 
+import com.credable.app.middleware_service.model.Transaction;
+import com.credable.app.middleware_service.model.TransactionResponse;
 import com.credable.app.shared.exception.ExternalServiceException;
 import com.credable.app.shared.generated.transactions.TransactionData;
 import com.credable.app.shared.generated.transactions.TransactionsRequest;
 import com.credable.app.shared.generated.transactions.TransactionsResponse;
-import com.credable.app.shared.model.Transaction;
 
 
-import com.credable.app.shared.model.TransactionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -26,29 +24,44 @@ public class TransactionClient {
 
     private final WebServiceTemplate transactionWebServiceTemplate;
 
+    /**
+     * Get the transactions for a given customer number
+     * @param customerNumber the customer number
+     * @return a TransactionResponse containing the list of transactions
+     * @throws ExternalServiceException if there is an error calling the Transaction service
+     */
     public TransactionResponse getTransactions(String customerNumber) {
         try {
+            // Create the request
             TransactionsRequest request = new TransactionsRequest();
             request.setCustomerNumber(customerNumber);
 
+            // Send the request to the Transaction service and get the response
             TransactionsResponse response = (TransactionsResponse) transactionWebServiceTemplate
                     .marshalSendAndReceive(request);
 
+            // Check if the response is valid
             if (response == null || response.getTransactions() == null) {
                 throw new ExternalServiceException("No transactions returned from Transaction service");
             }
 
-            var trs_list = response.getTransactions().stream()
+            // Convert the TransactionData to Transaction
+            var transactions = response.getTransactions().stream()
                     .map(this::convertToTransaction)
                     .collect(Collectors.toList());
 
-         return TransactionResponse.builder().transactions(trs_list).status("success").message("you request was successful").build();
+            // Build the response
+            return TransactionResponse.builder()
+                    .transactions(transactions)
+                    .status("success")
+                    .message("You request was successful")
+                    .build();
 
         } catch (Exception e) {
+            // Log the error and throw a custom exception
             log.error("Error calling Transaction service", e);
             throw new ExternalServiceException("Error calling Transaction service: " + e.getMessage());
         }
-//        return null;
     }
 
     /**

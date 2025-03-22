@@ -9,11 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface LoanRepository extends MongoRepository<LoanEntity, String> {
+
+    Optional<LoanEntity> findByCustomerNumberAndStatus(String customerNumber, String status);
+
+
+
     List<LoanEntity> findByCustomerNumber(String customerNumber);
 
-    Optional<LoanEntity> findByCustomerNumberAndId(String customerNumber, String id);
-
-    List<LoanEntity> findByCustomerNumberAndStatus(String customerNumber, String status);
-
-    boolean existsByCustomerNumberAndStatus(String customerNumber, String status);
 }

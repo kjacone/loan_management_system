@@ -1,6 +1,6 @@
 package com.credable.app.lms_service.client;
 
-import com.credable.app.shared.model.ScoreResponse;
+import com.credable.app.lms_service.model.ScoreResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,35 +27,22 @@ public class ScoringClient {
     private String scoringApiUrl;
 
     /**
-     * Initiate Loan Scoring Process sending request to Scoring Engine
-     * @param customerNumber
-     * @return
+     * Initiates the Loan Scoring Process by sending a request to the Scoring Engine.
+     *
+     * @param customerNumber the customer number for which the scoring is to be initiated
      */
-//    @Retry(name = "scoringService", fallbackMethod = "fallbackInitiateScoring")
-    public String initiateScoring(String customerNumber) {
+    public void initiateScoring(String customerNumber) {
         try {
+            // Construct the URL for the scoring service endpoint
             String url = scoringApiUrl + "/scoring/initiateQueryScore/" + customerNumber;
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "application/json");
+            // Make a GET request to the scoring service
+            restTemplate.getForObject(url, Map.class);
 
-            Map<String, String> requestBody = new HashMap<>();
-            requestBody.put("customerNumber", customerNumber);
-
-            HttpEntity<Map<String, String>> entity = new HttpEntity<>(requestBody, headers);
-
-            Map response = restTemplate.exchange(
-                    url,
-                    HttpMethod.POST,
-                    entity,
-                    Map.class).getBody();
-
-            if (response == null || !response.containsKey("token")) {
-                throw new ExternalServiceException("No token returned from Scoring service");
-            }
-
-            return  String.valueOf(response.get("token"));
+            // Log successful initiation of scoring
+            log.info("Scoring initiated for customer number: {}", customerNumber);
         } catch (Exception e) {
+            // Log and throw an exception in case of errors
             log.error("Error initiating scoring");
             throw new ExternalServiceException("Error initiating scoring: " + e.getMessage());
         }
@@ -76,7 +63,7 @@ public class ScoringClient {
 
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-            Map response = restTemplate.exchange(
+            var response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     entity,

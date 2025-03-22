@@ -14,6 +14,7 @@ kyc:
   api:
     url: ${KYC_API_URL:https://kycapitest.credable.io/service/customerWsdl.wsdl}
 scoring:
+  score-threshold: 50
   api:
     url: ${SCORING_API_URL:https://scoringtest.credable.io/api/v1}
 

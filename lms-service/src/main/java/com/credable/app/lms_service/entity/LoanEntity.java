@@ -1,5 +1,6 @@
 package com.credable.app.lms_service.entity;
 
+import com.credable.app.lms_service.model.LoanStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class LoanEntity {
     private String id;
     private String customerNumber;
     private BigDecimal loanAmount;
-    private String status; // PENDING, APPROVED, REJECTED
+    private LoanStatus status; // ONGOING, APPROVED, REJECTED
     private Integer score;
     private BigDecimal loanLimit;
     private LocalDateTime requestDate;

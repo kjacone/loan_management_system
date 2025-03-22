@@ -1,19 +1,20 @@
-package com.credable.app.shared.model;
+package com.credable.app.lms_service.model;
 
+import com.credable.app.lms_service.entity.CustomerEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionResponse {
+public class ServiceResponse<T> {
     private String status;
     private String message;
-    private String customerNumber;
-    private List<Transaction> transactions;
+    private T data;
+
 }

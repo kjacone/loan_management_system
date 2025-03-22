@@ -9,6 +9,10 @@ transaction:
   api:
     url: ${TRANSACTION_API_URL:https://trxapitest.credable.io/service/transactionWsdl.wsdl}
 scoring:
+  middleware-endpoint:  ${SCORING_CLIENT_API_URL:https://scoringtest.credable.io/api/v1/client/createClient}
+  service-name: Loan Management Middleware
+  basic-auth-username: middleware-service
+  basic-auth-password: strong-secure-password
   client:
     api:
       url: ${SCORING_CLIENT_API_URL:https://scoringtest.credable.io/api/v1/client/createClient}

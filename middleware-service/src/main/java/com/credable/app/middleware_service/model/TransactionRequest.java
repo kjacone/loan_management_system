@@ -1,4 +1,4 @@
-package com.credable.app.shared.model;
+package com.credable.app.middleware_service.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

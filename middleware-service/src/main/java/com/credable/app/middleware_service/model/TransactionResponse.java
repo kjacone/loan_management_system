@@ -1,17 +1,19 @@
-package com.credable.app.shared.model;
+package com.credable.app.middleware_service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoanResponse {
+public class TransactionResponse {
     private String status;
     private String message;
-    private String loanId;
-    private String loanStatus;
+    private String customerNumber;
+    private List<Transaction> transactions;
 }
