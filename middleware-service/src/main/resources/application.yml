@@ -1,0 +1,18 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: middleware-service
+
+# External APIs
+transaction:
+  api:
+    url: ${TRANSACTION_API_URL:https://trxapitest.credable.io/service/transactionWsdl.wsdl}
+scoring:
+  client:
+    api:
+      url: ${SCORING_CLIENT_API_URL:https://scoringtest.credable.io/api/v1/client/createClient}
+
+logging:
+  level:
+    root: WARN

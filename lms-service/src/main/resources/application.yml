@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+# MongoDB Config
+spring:
+  application:
+    name: lms-service
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/lms}
+
+# External APIs
+kyc:
+  api:
+    url: ${KYC_API_URL:https://kycapitest.credable.io/service/customerWsdl.wsdl}
+scoring:
+  api:
+    url: ${SCORING_API_URL:https://scoringtest.credable.io/api/v1}
+

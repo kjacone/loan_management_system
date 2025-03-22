@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://credable.io/cbs/transaction" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://credable.io/cbs/transaction" targetNamespace="http://credable.io/cbs/transaction">
+  <wsdl:types>
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://credable.io/cbs/transaction">
+
+
+    <xs:element name="TransactionsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="customerNumber" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="TransactionsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="transactions" type="tns:transactionData"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="transactionData">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="accountNumber" type="xs:string"/>
+            <xs:element name="alternativechanneltrnscrAmount" type="xs:double"/>
+            <xs:element name="alternativechanneltrnscrNumber" type="xs:int"/>
+            <xs:element name="alternativechanneltrnsdebitAmount" type="xs:double"/>
+            <xs:element name="alternativechanneltrnsdebitNumber" type="xs:int"/>
+            <xs:element name="atmTransactionsNumber" type="xs:int"/>
+            <xs:element name="atmtransactionsAmount" type="xs:double"/>
+            <xs:element name="bouncedChequesDebitNumber" type="xs:int"/>
+            <xs:element name="bouncedchequescreditNumber" type="xs:int"/>
+            <xs:element name="bouncedchequetransactionscrAmount" type="xs:double"/>
+            <xs:element name="bouncedchequetransactionsdrAmount" type="xs:double"/>
+            <xs:element name="chequeDebitTransactionsAmount" type="xs:double"/>
+            <xs:element name="chequeDebitTransactionsNumber" type="xs:int"/>
+            <xs:element minOccurs="0" name="createdAt" type="xs:dateTime"/>
+            <xs:element minOccurs="0" name="createdDate" type="xs:dateTime"/>
+            <xs:element name="credittransactionsAmount" type="xs:double"/>
+            <xs:element name="debitcardpostransactionsAmount" type="xs:double"/>
+            <xs:element name="debitcardpostransactionsNumber" type="xs:int"/>
+            <xs:element name="fincominglocaltransactioncrAmount" type="xs:double"/>
+            <xs:element minOccurs="0" name="id" type="xs:long"/>
+            <xs:element name="incominginternationaltrncrAmount" type="xs:double"/>
+            <xs:element name="incominginternationaltrncrNumber" type="xs:int"/>
+            <xs:element name="incominglocaltransactioncrNumber" type="xs:int"/>
+            <xs:element minOccurs="0" name="intrestAmount" type="xs:int"/>
+            <xs:element minOccurs="0" name="lastTransactionDate" type="xs:dateTime"/>
+            <xs:element minOccurs="0" name="lastTransactionType" type="xs:string"/>
+            <xs:element minOccurs="0" name="lastTransactionValue" type="xs:int"/>
+            <xs:element name="maxAtmTransactions" type="xs:double"/>
+            <xs:element name="maxMonthlyBebitTransactions" type="xs:double"/>
+            <xs:element name="maxalternativechanneltrnscr" type="xs:double"/>
+            <xs:element name="maxalternativechanneltrnsdebit" type="xs:double"/>
+            <xs:element name="maxbouncedchequetransactionscr" type="xs:double"/>
+            <xs:element name="maxchequedebittransactions" type="xs:double"/>
+            <xs:element name="maxdebitcardpostransactions" type="xs:double"/>
+            <xs:element name="maxincominginternationaltrncr" type="xs:double"/>
+            <xs:element name="maxincominglocaltransactioncr" type="xs:double"/>
+            <xs:element name="maxmobilemoneycredittrn" type="xs:double"/>
+            <xs:element name="maxmobilemoneydebittransaction" type="xs:double"/>
+            <xs:element name="maxmonthlycredittransactions" type="xs:double"/>
+            <xs:element name="maxoutgoinginttrndebit" type="xs:double"/>
+            <xs:element name="maxoutgoinglocaltrndebit" type="xs:double"/>
+            <xs:element name="maxoverthecounterwithdrawals" type="xs:double"/>
+            <xs:element name="minAtmTransactions" type="xs:double"/>
+            <xs:element name="minMonthlyDebitTransactions" type="xs:double"/>
+            <xs:element name="minalternativechanneltrnscr" type="xs:double"/>
+            <xs:element name="minalternativechanneltrnsdebit" type="xs:double"/>
+            <xs:element name="minbouncedchequetransactionscr" type="xs:double"/>
+            <xs:element name="minchequedebittransactions" type="xs:double"/>
+            <xs:element name="mindebitcardpostransactions" type="xs:double"/>
+            <xs:element name="minincominginternationaltrncr" type="xs:double"/>
+            <xs:element name="minincominglocaltransactioncr" type="xs:double"/>
+            <xs:element name="minmobilemoneycredittrn" type="xs:double"/>
+            <xs:element name="minmobilemoneydebittransaction" type="xs:double"/>
+            <xs:element name="minmonthlycredittransactions" type="xs:double"/>
+            <xs:element name="minoutgoinginttrndebit" type="xs:double"/>
+            <xs:element name="minoutgoinglocaltrndebit" type="xs:double"/>
+            <xs:element name="minoverthecounterwithdrawals" type="xs:double"/>
+            <xs:element name="mobilemoneycredittransactionAmount" type="xs:double"/>
+            <xs:element name="mobilemoneycredittransactionNumber" type="xs:int"/>
+            <xs:element name="mobilemoneydebittransactionAmount" type="xs:double"/>
+            <xs:element name="mobilemoneydebittransactionNumber" type="xs:int"/>
+            <xs:element name="monthlyBalance" type="xs:double"/>
+            <xs:element name="monthlydebittransactionsAmount" type="xs:double"/>
+            <xs:element name="outgoinginttransactiondebitAmount" type="xs:double"/>
+            <xs:element name="outgoinginttrndebitNumber" type="xs:int"/>
+            <xs:element name="outgoinglocaltransactiondebitAmount" type="xs:double"/>
+            <xs:element name="outgoinglocaltransactiondebitNumber" type="xs:int"/>
+            <xs:element name="overdraftLimit" type="xs:double"/>
+            <xs:element name="overthecounterwithdrawalsAmount" type="xs:double"/>
+            <xs:element name="overthecounterwithdrawalsNumber" type="xs:int"/>
+            <xs:element name="transactionValue" type="xs:double"/>
+            <xs:element minOccurs="0" name="updatedAt" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="account">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="accountNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="createdAt" type="xs:dateTime"/>
+            <xs:element minOccurs="0" name="createdDate" type="xs:dateTime"/>
+            <xs:element minOccurs="0" name="currency" type="tns:currency"/>
+            <xs:element minOccurs="0" name="customerId" type="xs:long"/>
+            <xs:element minOccurs="0" name="customerNumber" type="xs:string"/>
+            <xs:element minOccurs="0" name="id" type="xs:long"/>
+            <xs:element minOccurs="0" name="ownership" type="xs:string"/>
+            <xs:element minOccurs="0" name="productName" type="xs:string"/>
+            <xs:element name="runningBalance" type="xs:double"/>
+            <xs:element minOccurs="0" name="updatedAt" type="xs:dateTime"/>
+            <xs:element minOccurs="0" name="updatedDate" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="currency">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="TZS"/>
+            <xs:enumeration value="KES"/>
+            <xs:enumeration value="UGX"/>
+            <xs:enumeration value="USD"/>
+            <xs:enumeration value="GBP"/>
+            <xs:enumeration value="EURO"/>
+            <xs:enumeration value="PKR"/>
+            <xs:enumeration value="NGN"/>
+            <xs:enumeration value="EGP"/>
+            <xs:enumeration value="ETB"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="TransactionsRequest">
+    <wsdl:part element="tns:TransactionsRequest" name="TransactionsRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="TransactionsResponse">
+    <wsdl:part element="tns:TransactionsResponse" name="TransactionsResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="TransactionDataPort">
+    <wsdl:operation name="Transactions">
+      <wsdl:input message="tns:TransactionsRequest" name="TransactionsRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:TransactionsResponse" name="TransactionsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TransactionDataPortSoap11" type="tns:TransactionDataPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Transactions">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="TransactionsRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="TransactionsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TransactionDataPortService">
+    <wsdl:port binding="tns:TransactionDataPortSoap11" name="TransactionDataPortSoap11">
+      <soap:address location="http://localhost:8093/service/transaction-data"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

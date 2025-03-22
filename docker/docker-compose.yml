@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - loan-network
+
+  lms-service:
+    build:
+      context: ..
+      dockerfile: lms-service/Dockerfile
+    container_name: lms-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/lms
+      - SCORING_API_URL=https://scoringtest.credable.io/api/v1
+      - KYC_API_URL=https://kycapitest.credable.io/service/customerWsdl.wsdl
+    depends_on:
+      - mongodb
+    networks:
+      - loan-network
+
+  middleware-service:
+    build:
+      context: ..
+      dockerfile: middleware-service/Dockerfile
+    container_name: middleware-service
+    ports:
+      - "8081:8080"
+    environment:
+      - TRANSACTION_API_URL=https://trxapitest.credable.io/service/transactionWsdl.wsdl
+      - SCORING_CLIENT_API_URL=https://scoringtest.credable.io/api/v1/client/createClient
+    networks:
+      - loan-network
+
+networks:
+  loan-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
