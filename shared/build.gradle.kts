@@ -6,7 +6,14 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
 
+
+
 }
+
+group = "com.credable.app"
+version = "0.0.1-SNAPSHOT"
+
+
 
 tasks.jar {
     enabled = true
@@ -15,7 +22,11 @@ tasks.jar {
 tasks.bootJar{
     enabled = false
 }
-
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17) // or whatever version you're using
+    }
+}
 
 dependencies {
 
@@ -24,11 +35,9 @@ dependencies {
 
     implementation("org.apache.cxf:cxf-rt-frontend-jaxws:3.5.5")
     implementation("javax.xml.bind:jaxb-api:2.3.1")
-    // Lombok
-//    api ("org.projectlombok:lombok:1.18.34")
-//    api ("org.projectlombok:lombok:1.18.34")
-    compileOnly ("org.projectlombok:lombok:1.18.36")
-    annotationProcessor ("org.projectlombok:lombok:1.18.36")
+
+    compileOnly("org.projectlombok:lombok:1.18.24")
+    annotationProcessor("org.projectlombok:lombok:1.18.24")
 
     // Spring dependencies
     api("org.springframework.boot:spring-boot-starter-web")
@@ -40,11 +49,6 @@ dependencies {
     api("org.apache.cxf:cxf-spring-boot-starter-jaxws:4.0.2") {
         exclude(group = "org.apache.cxf", module = "cxf-rt-transports-http")
     }
-
-
-
-
-
 
 
     // MongoDB
@@ -64,8 +68,5 @@ dependencies {
 
     // Testing
     api("org.springframework.boot:spring-boot-starter-test")
-    testCompileOnly("org.projectlombok:lombok:1.18.30")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
+    api("org.springframework.ws:spring-ws-test")
 }
-
-

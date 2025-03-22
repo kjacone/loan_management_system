@@ -3,9 +3,11 @@ package com.credable.app.lms_service.service;
 import com.credable.app.lms_service.client.ScoringClient;
 import com.credable.app.shared.model.LoanRequest;
 import com.credable.app.shared.model.LoanResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class LoanService {
     private final ScoringClient scoringClient;
 

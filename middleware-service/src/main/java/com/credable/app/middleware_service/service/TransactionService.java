@@ -2,13 +2,15 @@ package com.credable.app.middleware_service.service;
 
 import com.credable.app.middleware_service.client.TransactionClient;
 import com.credable.app.shared.model.TransactionResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+
+@RequiredArgsConstructor
 public class TransactionService {
 
-    @Autowired
+
     private final TransactionClient transactionClient;
     public TransactionResponse getTransactions(String customerNumber) {
         // TODO Auto-generated method stub
