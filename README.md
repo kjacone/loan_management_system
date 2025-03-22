@@ -49,7 +49,7 @@ loan-management-system/
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/kjacone/loan_management_system
    cd loan-management-system
    ```
 
