@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lms-service/loan-management-system.lms-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lms-service/loan-management-system.lms-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/middleware-service/loan-management-system.middleware-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/middleware-service/loan-management-system.middleware-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/shared/loan-management-system.shared.main.iml" filepath="$PROJECT_DIR$/.idea/modules/shared/loan-management-system.shared.main.iml" />
     </modules>
   </component>

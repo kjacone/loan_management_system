@@ -7,21 +7,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Service;
 import com.credable.app.shared.exception.ExternalServiceException;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
 public class ScoringClient {
 
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;;
 
     @Value("${scoring.api.url}")  // scoring service endpoint
     private String scoringApiUrl;
@@ -37,7 +36,10 @@ public class ScoringClient {
             String url = scoringApiUrl + "/scoring/initiateQueryScore/" + customerNumber;
 
             // Make a GET request to the scoring service
-            restTemplate.getForObject(url, Map.class);
+
+            webClient.get().uri(url)
+                    .retrieve()
+                    .bodyToMono(Map.class);
 
             // Log successful initiation of scoring
             log.info("Scoring initiated for customer number: {}", customerNumber);
@@ -53,7 +55,6 @@ public class ScoringClient {
      * @param token
      * @return
      */
-//    @Retry(name = "scoringService", fallbackMethod = "fallbackGetScoring")
     public ScoreResponse getScore(String token) {
         try {
             String url = scoringApiUrl + "/scoring/queryScore/" + token;
@@ -63,11 +64,10 @@ public class ScoringClient {
 
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-            var response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    entity,
-                    Map.class).getBody();
+            var response = webClient.get().uri(url)
+                    .retrieve()
+                    .bodyToMono(HashMap.class)
+                    .block(); // Ensure blocking to get the response synchronously
 
             if (response == null || !response.containsKey("score") || !response.containsKey("loanLimit")) {
                 throw new ExternalServiceException("Invalid score response from Scoring service");

@@ -32,6 +32,8 @@ dependencies {
 
 
     api("com.sun.xml.ws:jaxws-tools:2.3.3")
+    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("io.netty:netty-resolver-dns-native-macos:4.1.85.Final:osx-aarch_64")
 
     implementation("org.apache.cxf:cxf-rt-frontend-jaxws:3.5.5")
     implementation("javax.xml.bind:jaxb-api:2.3.1")
