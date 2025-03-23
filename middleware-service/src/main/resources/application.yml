@@ -28,6 +28,9 @@ scoring:
     api:
       url: ${SCORING_CLIENT_API_URL:https://scoringtest.credable.io}
 
+
+
+
 # Logging Configuration
 logging:
   level:

@@ -12,6 +12,8 @@ java {
 
 dependencies {
     implementation(project(":shared"))
+
+
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     compileOnly("org.projectlombok:lombok:1.18.24")
     annotationProcessor("org.projectlombok:lombok:1.18.24")

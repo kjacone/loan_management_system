@@ -34,6 +34,12 @@ loan-management-system/
     └── build.gradle.kts
 ```
 
+## Sequence Diagram
+
+![Sequence Diagram](https://mermaid.ink/svg/pako:eNqdVtuO2zYQ_ZWBgAQOYMPoQ1_0EGBtB8GiSXYbByhS-IUrjW1ixUvIkbfGYv-9vMmibDmbVi-6cObMzOHMoZ6LStVYlIXFHy3KClec7QwTGwnuYhUpA8vWkhJo4jfNDPGKayYJPqsH3iAw2z3daH1p9enz2pv42xrNgVd4abNcBBt_m_zxfQlv4Zth0roEuJL23UhoXtcNPjEzAraulOFy90HuuAzZpQ8Qv1w6rBaxBrlTq8VGRoM3b-BWcuKsAYvUapiBwR23hAFLnBKAJ057sCkGZjG-KEJQBzRZutNBdiXcSZwRFxiDRL_eevb-_Zn915SDC1RrxV32k_u79TeYM83nh9_mVcNR0rwyyAiX4SXRNwCaOeQ-jIel1kiI3kDqERMNJzK6NgDbPtjKcO23BraNeoom3boHDt3gatMogWkNTNad20PiJto4Y9cXJcQSGsXkfAA_qRLql1Y8oEmVOBfn6JqlhD9bNEfwLXNzfwuT9d3NfTJyy7MOvquuK4HLrcqhVosS1uyAAcgvGsF8_N4mqyqBDfK0xKi1g8p8hileCStudcOOQ6dKyS0fRDqR_ckx4drNzaSln3P8NRl57l5htsM7I3UafG-Eak-t0rOy3GP1CI4Q8NPhG9wbp0pXi3OG_eKAjFNF3Qxqoyq0No9z1uEx4zRPcx5mkDBstLfE-fMw_5cr7Z3nNdbQQ1WAHZIF6lUHakYMtkaJC7EZhjofpEjyOdLIZGcNnKvdtU4eGddXg4ywa9SB13jFtW9Ap9aV33sbNt_vBv5kzz5-yLbsR7ZVgfiXHJw1UaERpCLX46w-xoXrmxjNU-e45d6-V9hg-BfjFMTGIJkMtlFKe84c0wKrPZPcCpgI9g_8DowIhabukOmu_1-mv5w4xxdsLKb8f6nUTlyCh68kTFTDBacE2CH3wqyEbtDx0GSiMapucToDdD6j4_qWo_2yvg2cDNq2ofNsg6BkOuHkyD3v3THhDwt5DIch2_ojLkd7d1UBLxDHZDDsXDxfuqgjInhbXwhgnM8L9CvSVyMx3rzO63_iMxoX08ItCcZr97v27F03Be1R4KYo3WPNzOOm2MgXZ8daUuujrIqSTIvTwqh2t-9eWu3GvfvPK8otcx06Ldx_0N9KiWj08i8TEl4_)
+
+
+
 ## Technology Stack
 
 - **Language**: Java
@@ -82,7 +88,6 @@ loan-management-system/
    ```
 
 ## Services
-
 ### LMS Service (port 8080)
 
 Manages loan operations including:
@@ -95,6 +100,8 @@ Manages loan operations including:
 - **POST /loan/subscription** - Subscribe a customer for loan eligibility
 - **POST /loan/request** - Submit a loan request
 - **GET /loan/status** - Check loan application status
+- **GET /health** - Health check endpoint
+- **GET /swagger-ui.html** - Swagger UI for API documentation
 
 ### Middleware Service (port 8081)
 
@@ -103,6 +110,8 @@ Handles transaction data processing and exposes APIs to the Scoring Engine.
 #### API Endpoints
 
 - **POST /middleware/transactions** - Retrieve customer transaction data
+- **GET /health** - Health check endpoint
+- **GET /swagger-ui.html** - Swagger UI for API documentation
 
 
 
