@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms-service
+spec:
+  selector:
+    matchLabels:
+      app: lms-service
+  template:
+    metadata:
+      labels:
+        app: lms-service
+    spec:
+      containers:
+        - name: lms-service
+          image: lms-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://mongodb:27017/lms"
+            - name: SCORING_API_URL
+              value: "https://scoringtest.credable.io/api/v1"
+            - name: KYC_API_URL
+              value: "https://kycapitest.credable.io/service/customerWsdl.wsdl"

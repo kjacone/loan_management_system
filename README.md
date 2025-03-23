@@ -193,6 +193,36 @@ Monitor your deployments:
    - CloudWatch for logs and metrics
    - Amazon Bedrock console for database monitoring
 
+
+### Deployment in Kubernetes
+
+Kubernetes YAML files:
+
+1. **mongodb-deployment.yaml**: Deployment configuration for MongoDB
+1. **mongodb-service.yaml**: Service to expose MongoDB within the cluster
+1. **mongodb-pvc.yaml**: PersistentVolumeClaim for MongoDB data storage
+1. **lms-service-deployment.yaml**: Deployment for the LMS service
+1. **lms-service-service.yaml**: Service to expose the LMS service
+1. **middleware-service-deployment.yaml**: Deployment for the middleware service
+1. **middleware-service-service.yaml**: Service to expose the middleware service
+
+Build and push your container images to a registry before deploying to Kubernetes.
+1. **lms-service:latest**  
+2. **middleware-service:latest**
+
+Update the image references as needed.
+To deploy these files to your Kubernetes cluster, you can use:
+```bash
+# Replace the image names with your actual registry and image names
+// 
+kubectl apply -f mongodb-pvc.yaml
+kubectl apply -f mongodb-deployment.yaml
+kubectl apply -f mongodb-service.yaml
+kubectl apply -f lms-service-deployment.yaml
+kubectl apply -f lms-service-service.yaml
+kubectl apply -f middleware-service-deployment.yaml
+kubectl apply -f middleware-service-service.yaml
+```
 ### Troubleshooting
 
 Common issues:

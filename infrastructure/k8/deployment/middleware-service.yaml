@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middleware-service
+spec:
+  selector:
+    matchLabels:
+      app: middleware-service
+  template:
+    metadata:
+      labels:
+        app: middleware-service
+    spec:
+      containers:
+        - name: middleware-service
+          image: middleware-service:latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: TRANSACTION_API_URL
+              value: "https://trxapitest.credable.io/service/transactionWsdl.wsdl"
+            - name: SCORING_CLIENT_API_URL
+              value: "https://scoringtest.credable.io/api/v1/client/createClient"
