@@ -1,13 +1,13 @@
 
-package com.credable.app.shared.generated.transactions;
+package com.credable.app.middleware_service.generated;
 
-import javax.xml.bind.annotation.XmlRegistry;
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the com.credable.app.shared.generated.transactions package. 
+ * generated in the com.credable.app.middleware_service.generated package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -23,7 +23,7 @@ public class ObjectFactory {
 
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.credable.app.shared.generated.transactions
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.credable.app.middleware_service.generated
      * 
      */
     public ObjectFactory() {

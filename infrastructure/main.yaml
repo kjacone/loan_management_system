@@ -1,0 +1,144 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Deployment template for Loan Management System services'
+
+# Parameters for the template
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    Description: Deployment environment
+
+  ECRRepositoryName:
+    Type: String
+    Default: loan-management-system
+    Description: ECR repository name for Docker images
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC where resources will be created
+
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Subnets where resources will be deployed
+
+  DatabasePassword:
+    Type: String
+    NoEcho: true
+    Description: Password for the DocumentDB database
+
+  DatabaseUsername:
+    Type: String
+    Default: lmsadmin
+    Description: Username for the DocumentDB database
+
+# Resources
+Resources:
+  # Import nested stacks
+  RepositoriesStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./repositories.yaml
+      Parameters:
+        ECRRepositoryName: !Ref ECRRepositoryName
+
+  DatabaseStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - RepositoriesStack
+    Properties:
+      TemplateURL: ./database.yaml
+      Parameters:
+        Environment: !Ref Environment
+        VpcId: !Ref VpcId
+        Subnets: !Join [',', !Ref Subnets]
+        DatabaseUsername: !Ref DatabaseUsername
+        DatabasePassword: !Ref DatabasePassword
+        ECSSecurityGroup: !GetAtt ECSStack.Outputs.ECSSecurityGroup
+
+  ECSStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - DatabaseStack
+    Properties:
+      TemplateURL: ./ecs.yaml
+      Parameters:
+        Environment: !Ref Environment
+        VpcId: !Ref VpcId
+
+  LMSServiceStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - DatabaseStack
+      - ECSStack
+      - RepositoriesStack
+    Properties:
+      TemplateURL: ./lms-service.yaml
+      Parameters:
+        Environment: !Ref Environment
+        VpcId: !Ref VpcId
+        Subnets: !Join [',', !Ref Subnets]
+        ECSCluster: !GetAtt ECSStack.Outputs.ECSCluster
+        ECSSecurityGroup: !GetAtt ECSStack.Outputs.ECSSecurityGroup
+        ECSTaskExecutionRole: !GetAtt ECSStack.Outputs.ECSTaskExecutionRole
+        ECSTaskRole: !GetAtt ECSStack.Outputs.ECSTaskRole
+        ECRRepositoryName: !Ref ECRRepositoryName
+        DocDBConnectionString: !GetAtt DatabaseStack.Outputs.ConnectionString
+        AccountId: !Ref AWS::AccountId
+        Region: !Ref AWS::Region
+
+  MiddlewareServiceStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - DatabaseStack
+      - ECSStack
+      - LMSServiceStack
+      - RepositoriesStack
+    Properties:
+      TemplateURL: ./middleware-service.yaml
+      Parameters:
+        Environment: !Ref Environment
+        VpcId: !Ref VpcId
+        Subnets: !Join [',', !Ref Subnets]
+        ECSCluster: !GetAtt ECSStack.Outputs.ECSCluster
+        ECSSecurityGroup: !GetAtt ECSStack.Outputs.ECSSecurityGroup
+        ECSTaskExecutionRole: !GetAtt ECSStack.Outputs.ECSTaskExecutionRole
+        ECSTaskRole: !GetAtt ECSStack.Outputs.ECSTaskRole
+        ECRRepositoryName: !Ref ECRRepositoryName
+        DocDBConnectionString: !GetAtt DatabaseStack.Outputs.ConnectionString
+        LMSServiceURL: !GetAtt LMSServiceStack.Outputs.LoadBalancerDNS
+        AccountId: !Ref AWS::AccountId
+        Region: !Ref AWS::Region
+
+# Conditions
+Conditions:
+  IsProd: !Equals [!Ref Environment, 'prod']
+
+# Outputs
+Outputs:
+  LMSLoadBalancerDNS:
+    Description: DNS name for the LMS service load balancer
+    Value: !GetAtt LMSServiceStack.Outputs.LoadBalancerDNS
+    Export:
+      Name: !Sub "${Environment}-LMSServiceURL"
+
+  MiddlewareLoadBalancerDNS:
+    Description: DNS name for the Middleware service load balancer
+    Value: !GetAtt MiddlewareServiceStack.Outputs.LoadBalancerDNS
+    Export:
+      Name: !Sub "${Environment}-MiddlewareServiceURL"
+
+  LMSECRRepository:
+    Description: ECR Repository for LMS service
+    Value: !GetAtt RepositoriesStack.Outputs.LMSRepository
+
+  MiddlewareECRRepository:
+    Description: ECR Repository for Middleware service
+    Value: !GetAtt RepositoriesStack.Outputs.MiddlewareRepository
+
+  DocumentDBEndpoint:
+    Description: Endpoint for the DocumentDB cluster
+    Value: !GetAtt DatabaseStack.Outputs.ClusterEndpoint

@@ -9,19 +9,27 @@ A microservice-based solution for loan management with Docker support. This mono
 
 ```
 loan-management-system/
-├── build.gradle.kts            # Root build file
-├── settings.gradle.kts         # Settings file for all projects
-├── gradle/                     # Gradle wrapper files
-├── docker/                     # Docker compose and related files
-├── lms-service/                # LMS microservice
+├── .github/                      # New directory for cicd code
+│   └── workflows/                             # github workflows
+│       ├── cicd.yaml  
+├── build.gradle.kts
+├── settings.gradle.kts
+├── gradle/
+├── docker/
+├── buildspec.yml                        # For AWS CodeBuild
+├── infrastructure/                      # New directory for infrastructure code
+│   └── aws/                             # AWS-specific infrastructure
+│       ├── main.yaml          # CloudFormation template
+│       └── deploy.sh                    # Deployment script
+├── lms-service/
 │   ├── src/
 │   ├── build.gradle.kts
 │   └── Dockerfile
-├── middleware-service/         # Middleware microservice
+├── middleware-service/
 │   ├── src/
 │   ├── build.gradle.kts
 │   └── Dockerfile
-└── shared/                     # Shared code between services
+└── shared/
     ├── src/
     └── build.gradle.kts
 ```
@@ -122,6 +130,78 @@ This system integrates with several external services:
 1. **KYC API** - For customer verification
 2. **Scoring Engine** - For loan eligibility scoring
 3. **Transaction API** - For retrieving customer transaction data
+
+## Deployment
+
+The Loan Management System uses GitHub Actions for continuous integration and deployment to AWS. The system automatically builds, tests, and deploys services when changes are pushed to the repository.
+
+### CI/CD Pipeline
+
+Our CI/CD pipeline includes the following stages:
+
+1. **Test**: Runs all tests to ensure code quality
+2. **Build**: Builds the services and Docker images
+3. **Infrastructure**: Deploys or updates AWS infrastructure using CloudFormation
+4. **Services**: Updates ECS services with new container images
+5. **Notification**: Reports deployment status
+
+### Prerequisites
+
+Before deploying, you need to set up the following:
+
+1. **AWS Credentials**: Add these secrets to your GitHub repository:
+   - `AWS_ACCESS_KEY_ID`: Your AWS access key
+   - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
+
+2. **Optional - Slack Notifications**: To enable Slack notifications, add:
+   - `SLACK_WEBHOOK_URL`: Your Slack webhook URL
+
+### Environments
+
+The system supports three environments:
+- `dev`: Automatically deployed when pushing to any branch except `main`
+- `staging`: Can be deployed manually via workflow dispatch
+- `prod`: Automatically deployed when pushing to the `main` branch
+
+### Manual Deployment
+
+You can manually trigger a deployment to any environment:
+
+1. Go to the "Actions" tab in your GitHub repository
+2. Select the "Loan Management System CI/CD" workflow
+3. Click "Run workflow"
+4. Choose the branch and environment
+5. Click "Run workflow"
+### Infrastructure
+
+The deployment creates the following AWS resources:
+
+- ECS Fargate cluster for containerized services
+- ECR repositories for Docker images
+- Amazon Bedrock database
+- Application Load Balancers
+- Security groups and IAM roles
+- CloudWatch logs for monitoring
+
+### Monitoring
+
+Monitor your deployments:
+
+1. In GitHub: Check the "Actions" tab for workflow runs
+2. In AWS Console:
+   - ECS console for container status
+   - CloudWatch for logs and metrics
+   - Amazon Bedrock console for database monitoring
+
+### Troubleshooting
+
+Common issues:
+
+1. **Failed Tests**: Check the test logs in the GitHub Actions run
+2. **Deployment Failure**: Verify AWS credentials and permissions
+3. **Service Unavailable**: Check ECS service status and logs
+
+For additional help, refer to AWS documentation or contact the development team.
 
 ## Contributing
 

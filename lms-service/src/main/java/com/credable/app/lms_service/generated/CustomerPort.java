@@ -1,12 +1,12 @@
 
-package com.credable.app.shared.generated.customer;
+package com.credable.app.lms_service.generated;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebResult;
+import jakarta.jws.WebService;
+import jakarta.jws.soap.SOAPBinding;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 
 /**
@@ -27,7 +27,7 @@ public interface CustomerPort {
      * 
      * @param customerRequest
      * @return
-     *     returns com.credable.app.shared.generated.customer.CustomerResponse
+     *     returns com.credable.app.lms_service.generated.CustomerResponse
      */
     @WebMethod(operationName = "Customer")
     @WebResult(name = "CustomerResponse", targetNamespace = "http://credable.io/cbs/customer", partName = "CustomerResponse")

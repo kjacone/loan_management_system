@@ -1,13 +1,13 @@
 package com.credable.app.lms_service.client;
 
 
+import com.credable.app.lms_service.generated.CustomerRequest;
+import com.credable.app.lms_service.generated.CustomerResponse;
 import com.credable.app.shared.exception.ExternalServiceException;
-import com.credable.app.shared.generated.customer.CustomerRequest;
-import com.credable.app.shared.generated.customer.CustomerResponse;
-import com.credable.app.shared.generated.transactions.TransactionsRequest;
-import com.credable.app.shared.generated.transactions.TransactionsResponse;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CustomerKycClient {
+    @Autowired
     private final WebServiceTemplate kycWebServiceTemplate;
 
     /**

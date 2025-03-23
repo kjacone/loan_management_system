@@ -1,12 +1,12 @@
 
-package com.credable.app.shared.generated.transactions;
+package com.credable.app.middleware_service.generated;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebResult;
+import jakarta.jws.WebService;
+import jakarta.jws.soap.SOAPBinding;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 
 /**
@@ -27,7 +27,7 @@ public interface TransactionDataPort {
      * 
      * @param transactionsRequest
      * @return
-     *     returns com.credable.app.shared.generated.transactions.TransactionsResponse
+     *     returns com.credable.app.middleware_service.generated.TransactionsResponse
      */
     @WebMethod(operationName = "Transactions")
     @WebResult(name = "TransactionsResponse", targetNamespace = "http://credable.io/cbs/transaction", partName = "TransactionsResponse")

@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'ECR repositories for Loan Management System'
+
+# Parameters
+Parameters:
+  # Base ECR repository name
+  ECRRepositoryName:
+    Type: String
+    Description: Base ECR repository name
+
+# Resources
+Resources:
+  # ECR repository for LMS service
+  LMSServiceRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      # Use the base repository name plus the service name
+      RepositoryName: !Sub "${ECRRepositoryName}/lms-service"
+      # Set a lifecycle policy to keep only the latest 10 images
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Keep only the latest 10 images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 10
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+
+  # ECR repository for Middleware service
+  MiddlewareServiceRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      # Use the base repository name plus the service name
+      RepositoryName: !Sub "${ECRRepositoryName}/middleware-service"
+      # Set a lifecycle policy to keep only the latest 10 images
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Keep only the latest 10 images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 10
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+
+# Outputs
+Outputs:
+  # ECR Repository for LMS service
+  LMSRepository:
+    Description: ECR Repository for LMS service
+    Value: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryName}/lms-service"
+  
+  # ECR Repository for Middleware service
+  MiddlewareRepository:
+    Description: ECR Repository for Middleware service
+    Value: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryName}/middleware-service"

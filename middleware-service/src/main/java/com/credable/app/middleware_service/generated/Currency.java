@@ -1,8 +1,8 @@
 
-package com.credable.app.shared.generated.transactions;
+package com.credable.app.middleware_service.generated;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlType;
 
 
 /**

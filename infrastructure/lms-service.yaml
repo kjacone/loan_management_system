@@ -1,0 +1,155 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'LMS Service resources for Loan Management System'
+
+# Parameters
+Parameters:
+  Environment:
+    Type: String
+    Description: Deployment environment
+  
+  VpcId:
+    Type: String
+    Description: VPC ID
+  
+  Subnets:
+    Type: CommaDelimitedList
+    Description: List of subnet IDs
+  
+  ECSCluster:
+    Type: String
+    Description: ECS Cluster
+  
+  ECSSecurityGroup:
+    Type: String
+    Description: ECS Security Group
+  
+  ECSTaskExecutionRole:
+    Type: String
+    Description: ECS Task Execution Role
+  
+  ECSTaskRole:
+    Type: String
+    Description: ECS Task Role
+  
+  ECRRepositoryName:
+    Type: String
+    Description: ECR Repository Name
+  
+  DocDBConnectionString:
+    Type: String
+    Description: DocumentDB Connection String
+  
+  AccountId:
+    Type: String
+    Description: AWS Account ID
+  
+  Region:
+    Type: String
+    Description: AWS Region
+
+# Resources
+Resources:
+  LMSTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub "${Environment}-lms-service"
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 512
+      ExecutionRoleArn: !Ref ECSTaskExecutionRole
+      TaskRoleArn: !Ref ECSTaskRole
+      ContainerDefinitions:
+        - Name: lms-service
+          Image: !Sub "${AccountId}.dkr.ecr.${Region}.amazonaws.com/${ECRRepositoryName}/lms-service:latest"
+          Essential: true
+          PortMappings:
+            - ContainerPort: 8080
+              HostPort: 8080
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LMSServiceLogGroup
+              awslogs-region: !Ref Region
+              awslogs-stream-prefix: lms-service
+          Environment:
+            - Name: SPRING_PROFILES_ACTIVE
+              Value: !Ref Environment
+            - Name: MONGODB_CONNECTION_STRING
+              Value: !Ref DocDBConnectionString
+            - Name: MONGODB_DATABASE
+              Value: lms
+
+  LMSServiceLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/ecs/${Environment}-lms-service"
+      RetentionInDays: 14
+
+  LMSLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub "${Environment}-lms-lb"
+      Subnets: !Ref Subnets
+      SecurityGroups:
+        - !Ref ECSSecurityGroup
+      Type: application
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: LoanManagementSystem
+
+  LMSTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub "${Environment}-lms-tg"
+      Port: 8080
+      Protocol: HTTP
+      TargetType: ip
+      VpcId: !Ref VpcId
+      HealthCheckPath: /actuator/health
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 3
+
+  LMSLoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LMSLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref LMSTargetGroup
+
+  LMSService:
+    Type: AWS::ECS::Service
+    DependsOn: LMSLoadBalancerListener
+    Properties:
+      ServiceName: !Sub "${Environment}-lms-service"
+      Cluster: !Ref ECSCluster
+      TaskDefinition: !Ref LMSTaskDefinition
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 75
+      DesiredCount: 2
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          SecurityGroups:
+            - !Ref ECSSecurityGroup
+          Subnets: !Ref Subnets
+          AssignPublicIp: ENABLED
+      LoadBalancers:
+        - ContainerName: lms-service
+          ContainerPort: 8080
+          TargetGroupArn: !Ref LMSTargetGroup
+
+# Outputs
+Outputs:
+  LoadBalancerDNS:
+    Description: DNS name for the LMS service load balancer
+    Value: !GetAtt LMSLoadBalancer.DNSName

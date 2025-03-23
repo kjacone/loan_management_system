@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'DocumentDB resources for Loan Management System'
+
+Parameters:
+  # Parameter for the deployment environment
+  Environment:
+    Type: String
+    Description: Deployment environment
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+  
+  # Parameter for the VPC ID
+  VpcId:
+    Type: String
+    Description: VPC ID
+  
+  # Parameter for the list of subnet IDs
+  Subnets:
+    Type: CommaDelimitedList
+    Description: List of subnet IDs
+  
+  # Parameter for the DocumentDB username
+  DatabaseUsername:
+    Type: String
+    Description: Username for the DocumentDB database
+  
+  # Parameter for the DocumentDB password
+  DatabasePassword:
+    Type: String
+    NoEcho: true
+    Description: Password for the DocumentDB database
+  
+  # Parameter for the security group ID for ECS services
+  ECSSecurityGroup:
+    Type: String
+    Description: Security group ID for ECS services
+
+Conditions:
+  # Condition to check if the environment is production
+  IsProd: !Equals [!Ref Environment, 'prod']
+
+Resources:
+  # DocumentDB cluster resource
+  DocumentDBCluster:
+    Type: AWS::DocDB::DBCluster
+    Properties:
+      # Master username for the DocumentDB cluster
+      MasterUsername: !Ref DatabaseUsername
+      # Master password for the DocumentDB cluster
+      MasterUserPassword: !Ref DatabasePassword
+      # Backup retention period in days
+      BackupRetentionPeriod: 7
+      # Preferred backup window
+      PreferredBackupWindow: "02:00-03:00"
+      # Preferred maintenance window
+      PreferredMaintenanceWindow: "sun:05:00-sun:06:00"
+      # DB subnet group for the DocumentDB cluster
+      DBSubnetGroupName: !Ref DocumentDBSubnetGroup
+      # VPC security group IDs for the DocumentDB cluster
+      VpcSecurityGroupIds:
+        - !Ref DatabaseSecurityGroup
+      # Storage encryption enabled
+      StorageEncrypted: true
+      # Deletion protection enabled for production environments
+      DeletionProtection: !If [IsProd, true, false]
+      # Tags for the DocumentDB cluster
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: LoanManagementSystem
+
+  # DocumentDB instance 1 resource
+  DocumentDBInstance1:
+    Type: AWS::DocDB::DBInstance
+    Properties:
+      # DBCluster identifier for the DocumentDB instance
+      DBClusterIdentifier: !Ref DocumentDBCluster
+      # DB instance class for the DocumentDB instance
+      DBInstanceClass: !If [IsProd, db.r5.large, db.t3.medium]
+      # Tags for the DocumentDB instance
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: LoanManagementSystem
+
+  DocumentDBInstance2:
+    Type: AWS::DocDB::DBInstance
+    Condition: IsProd
+    Properties:
+      DBClusterIdentifier: !Ref DocumentDBCluster
+      DBInstanceClass: db.r5.large
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: LoanManagementSystem
+
+  # Security group for DocumentDB access
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for LMS DocumentDB cluster
+      VpcId: !Ref VpcId
+      # Allow traffic on 27017 from the ECS security group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 27017
+          ToPort: 27017
+          SourceSecurityGroupId: !Ref ECSSecurityGroup
+
+  # Subnet group for DocumentDB cluster
+  DocumentDBSubnetGroup:
+    Type: AWS::DocDB::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for LMS DocumentDB
+      # Use the subnets provided in the parameters
+      SubnetIds: !Ref Subnets
+      # Tags for the subnet group
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: LoanManagementSystem
+
+Outputs:
+  # DocumentDB cluster endpoint
+  ClusterEndpoint:
+    Description: DocumentDB Cluster Endpoint
+    Value: !GetAtt DocumentDBCluster.Endpoint
+
+  # DocumentDB cluster port
+  ClusterPort:
+    Description: DocumentDB Cluster Port
+    Value: !GetAtt DocumentDBCluster.Port
+
+  # MongoDB connection string
+  ConnectionString:
+    Description: MongoDB Connection String
+    Value: !Sub "mongodb://${DatabaseUsername}:${DatabasePassword}@${DocumentDBCluster.Endpoint}:27017/lms?retryWrites=false&replicaSet=rs0&readPreference=secondaryPreferred"

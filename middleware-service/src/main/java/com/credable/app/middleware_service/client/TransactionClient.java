@@ -1,11 +1,13 @@
 package com.credable.app.middleware_service.client;
 
+
+import com.credable.app.middleware_service.generated.TransactionData;
+import com.credable.app.middleware_service.generated.TransactionsRequest;
+import com.credable.app.middleware_service.generated.TransactionsResponse;
 import com.credable.app.middleware_service.model.Transaction;
 import com.credable.app.middleware_service.model.TransactionResponse;
 import com.credable.app.shared.exception.ExternalServiceException;
-import com.credable.app.shared.generated.transactions.TransactionData;
-import com.credable.app.shared.generated.transactions.TransactionsRequest;
-import com.credable.app.shared.generated.transactions.TransactionsResponse;
+
 
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.credable.app.middleware_service.config;
+package com.credable.app.middleware_service.model;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

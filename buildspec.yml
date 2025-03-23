@@ -1,0 +1,75 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+    commands:
+      - echo Installing dependencies...
+      - apt-get update
+      - apt-get install -y jq
+
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - LMS_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME/lms-service
+      - MIDDLEWARE_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NAME/middleware-service
+
+  build:
+    commands:
+      - echo Building the code...
+      - ./gradlew clean build -x test
+
+      - echo Building the LMS service Docker image...
+      - cd lms-service
+      - docker build -t $LMS_REPOSITORY_URI:latest .
+      - docker tag $LMS_REPOSITORY_URI:latest $LMS_REPOSITORY_URI:$IMAGE_TAG
+      - cd ..
+
+      - echo Building the Middleware service Docker image...
+      - cd middleware-service
+      - docker build -t $MIDDLEWARE_REPOSITORY_URI:latest .
+      - docker tag $MIDDLEWARE_REPOSITORY_URI:latest $MIDDLEWARE_REPOSITORY_URI:$IMAGE_TAG
+      - cd ..
+
+  post_build:
+    commands:
+      - echo Pushing the Docker images...
+      - docker push $LMS_REPOSITORY_URI:latest
+      - docker push $LMS_REPOSITORY_URI:$IMAGE_TAG
+      - docker push $MIDDLEWARE_REPOSITORY_URI:latest
+      - docker push $MIDDLEWARE_REPOSITORY_URI:$IMAGE_TAG
+
+      - echo Creating image definitions file...
+      - |
+        cat <<EOF > imagedefinitions.json
+        [
+          {
+            "name": "lms-service",
+            "imageUri": "$LMS_REPOSITORY_URI:$IMAGE_TAG"
+          },
+          {
+            "name": "middleware-service",
+            "imageUri": "$MIDDLEWARE_REPOSITORY_URI:$IMAGE_TAG"
+          }
+        ]
+        EOF
+
+      - echo Updating ECS services...
+      - aws ecs update-service --cluster ${ENVIRONMENT}-lms-cluster --service ${ENVIRONMENT}-lms-service --force-new-deployment
+      - aws ecs update-service --cluster ${ENVIRONMENT}-lms-cluster --service ${ENVIRONMENT}-middleware-service --force-new-deployment
+
+artifacts:
+  files:
+    - imagedefinitions.json
+    - appspec.yml
+    - taskdef-lms.json
+    - taskdef-middleware.json
+
+cache:
+  paths:
+    - '/root/.gradle/caches/**/*'
+    - '/root/.gradle/wrapper/**/*'

@@ -1,8 +1,8 @@
 
-package com.credable.app.shared.generated.customer;
+package com.credable.app.lms_service.generated;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlType;
 
 
 /**

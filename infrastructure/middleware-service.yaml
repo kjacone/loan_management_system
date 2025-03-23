@@ -1,0 +1,168 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Middleware Service resources for Loan Management System'
+
+# Parameters for the template
+Parameters:
+  Environment:
+    Type: String
+    Description: Deployment environment
+
+  VpcId:
+    Type: String
+    Description: VPC ID
+
+  Subnets:
+    Type: CommaDelimitedList
+    Description: List of subnet IDs
+
+  ECSCluster:
+    Type: String
+    Description: ECS Cluster
+
+  ECSSecurityGroup:
+    Type: String
+    Description: ECS Security Group
+
+  ECSTaskExecutionRole:
+    Type: String
+    Description: ECS Task Execution Role
+
+  ECSTaskRole:
+    Type: String
+    Description: ECS Task Role
+
+  ECRRepositoryName:
+    Type: String
+    Description: ECR Repository Name
+
+  DocDBConnectionString:
+    Type: String
+    Description: DocumentDB Connection String
+
+  LMSServiceURL:
+    Type: String
+    Description: LMS Service URL
+
+  AccountId:
+    Type: String
+    Description: AWS Account ID
+
+  Region:
+    Type: String
+    Description: AWS Region
+
+# Resources for the Middleware Service
+Resources:
+  # Task definition for the Middleware Service
+  MiddlewareTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub "${Environment}-middleware-service"
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 512
+      ExecutionRoleArn: !Ref ECSTaskExecutionRole
+      TaskRoleArn: !Ref ECSTaskRole
+      ContainerDefinitions:
+        - Name: middleware-service
+          Image: !Sub "${AccountId}.dkr.ecr.${Region}.amazonaws.com/${ECRRepositoryName}/middleware-service:latest"
+          Essential: true
+          PortMappings:
+            - ContainerPort: 8090
+              HostPort: 8090
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref MiddlewareServiceLogGroup
+              awslogs-region: !Ref Region
+              awslogs-stream-prefix: middleware-service
+          Environment:
+            - Name: SPRING_PROFILES_ACTIVE
+              Value: !Ref Environment
+            - Name: LMS_SERVICE_URL
+              Value: !Sub "http://${LMSServiceURL}"
+            - Name: MONGODB_CONNECTION_STRING
+              Value: !Ref DocDBConnectionString
+            - Name: MONGODB_DATABASE
+              Value: lms
+
+  # Log group for the Middleware Service
+  MiddlewareServiceLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/ecs/${Environment}-middleware-service"
+      RetentionInDays: 14
+
+  # Load balancer for the Middleware Service
+  MiddlewareLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub "${Environment}-middleware-lb"
+      Subnets: !Ref Subnets
+      SecurityGroups:
+        - !Ref ECSSecurityGroup
+      Type: application
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: LoanManagementSystem
+
+  # Target group for the Middleware Service
+  MiddlewareTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub "${Environment}-middleware-tg"
+      Port: 8090
+      Protocol: HTTP
+      TargetType: ip
+      VpcId: !Ref VpcId
+      HealthCheckPath: /actuator/health
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 3
+
+  # Listener for the Middleware Service
+  MiddlewareLoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref MiddlewareLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref MiddlewareTargetGroup
+
+  # Service for the Middleware Service
+  MiddlewareService:
+    Type: AWS::ECS::Service
+    DependsOn: MiddlewareLoadBalancerListener
+    Properties:
+      ServiceName: !Sub "${Environment}-middleware-service"
+      Cluster: !Ref ECSCluster
+      TaskDefinition: !Ref MiddlewareTaskDefinition
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 75
+      DesiredCount: 2
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          SecurityGroups:
+            - !Ref ECSSecurityGroup
+          Subnets: !Ref Subnets
+          AssignPublicIp: ENABLED
+      LoadBalancers:
+        - ContainerName: middleware-service
+          ContainerPort: 8090
+          TargetGroupArn: !Ref MiddlewareTargetGroup
+
+# Outputs for the template
+Outputs:
+  # DNS name for the Middleware service load balancer
+  LoadBalancerDNS:
+    Description: DNS name for the Middleware service load balancer
+    Value: !GetAtt MiddlewareLoadBalancer.DNSName

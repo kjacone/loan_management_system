@@ -19,7 +19,7 @@ public class SoapConfig {
     @Bean
     public Jaxb2Marshaller transactionMarshaller() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setContextPath("com.credable.app.shared.generated.transactions");
+        marshaller.setContextPath("com.credable.app.middleware_service.generated");
         return marshaller;
     }
 

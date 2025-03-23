@@ -1,4 +1,5 @@
 package com.credable.app.middleware_service.config;
+import com.credable.app.middleware_service.model.ScoringProperties;
 import com.credable.app.middleware_service.model.ScoringRegistrationResponse;
 import com.credable.app.middleware_service.repository.ScoringCredentialsRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -59,5 +59,5 @@ public class ScoringRegistrationConfig {
             log.error("Failed to register with scoring engine: {}", e.getMessage(), e);
             // Consider whether to fail startup or continue with degraded functionality
         }
-    }
+     }
 }
