@@ -19,6 +19,14 @@ scoring:
   api:
     url: ${SCORING_API_URL:https://scoringtest.credable.io/api/v1}
 
+# Retry Configuration
+  resilience4j:
+    retry:
+      instances:
+        scoringService:
+          maxAttempts: 5
+          waitDuration: 5s
+          enableExponentialBackoff: true
 
 
 
@@ -27,6 +35,7 @@ logging:
   level:
     root: WARN
     com.credable.middleware: DEBUG
+    org.springframework.data.mongodb: INFO
 
 # OpenAPI/Swagger Configuration
 springdoc:

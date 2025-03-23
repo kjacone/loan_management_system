@@ -9,10 +9,13 @@ java {
         languageVersion = JavaLanguageVersion.of(17) // or whatever version you're using
     }
 }
-
+val resilience4jVersion = "2.3.0"
 dependencies {
     implementation(project(":shared"))
 
+    implementation("io.github.resilience4j:resilience4j-spring-boot3:$resilience4jVersion")
+    implementation("io.github.resilience4j:resilience4j-all:$resilience4jVersion") // Optional, only required when you want to use the Decorators class
+    implementation("io.github.resilience4j:resilience4j-reactor:$resilience4jVersion")
 
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     compileOnly("org.projectlombok:lombok:1.18.24")

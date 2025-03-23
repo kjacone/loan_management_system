@@ -52,7 +52,7 @@ public class LoanService {
                 .phoneNumber(customerKyc.getCustomerNumber())
                 // add other fields if needed
                 .build();
-        var saved_customer = customerRepository.save(new_customer);
+        customerRepository.save(new_customer);
 
     }
 

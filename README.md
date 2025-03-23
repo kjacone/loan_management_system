@@ -9,34 +9,38 @@ A microservice-based solution for loan management with Docker support. This mono
 
 ```
 loan-management-system/
-├── .github/                      # New directory for cicd code
-│   └── workflows/                             # github workflows
+├── .github/                    # CICD configuration
+│   └── workflows/                    # github workflows
 │       ├── cicd.yaml  
 ├── build.gradle.kts
 ├── settings.gradle.kts
 ├── gradle/
-├── docker/
-├── buildspec.yml                        # For AWS CodeBuild
-├── infrastructure/                      # New directory for infrastructure code
+├── docker/                     # docker-compose for local development
+├── buildspec.yml               # For AWS CodeBuild
+├── infrastructure/             #  infrastructure Configuration
 │   └── aws/                             # AWS-specific infrastructure
-│       ├── main.yaml          # CloudFormation template
+│       ├── main.yaml                    # CloudFormation template
 │       └── deploy.sh                    # Deployment script
-├── lms-service/
+├── lms-service/                 # lms microservice
 │   ├── src/
 │   ├── build.gradle.kts
 │   └── Dockerfile
-├── middleware-service/
+├── middleware-service/          # middleware microservice
 │   ├── src/
 │   ├── build.gradle.kts
 │   └── Dockerfile
-└── shared/
+└── shared/                     # Module for shared code
     ├── src/
     └── build.gradle.kts
 ```
 
 ## Sequence Diagram
 
-![Sequence Diagram](https://mermaid.ink/svg/pako:eNqdVtuO2zYQ_ZWBgAQOYMPoQ1_0EGBtB8GiSXYbByhS-IUrjW1ixUvIkbfGYv-9vMmibDmbVi-6cObMzOHMoZ6LStVYlIXFHy3KClec7QwTGwnuYhUpA8vWkhJo4jfNDPGKayYJPqsH3iAw2z3daH1p9enz2pv42xrNgVd4abNcBBt_m_zxfQlv4Zth0roEuJL23UhoXtcNPjEzAraulOFy90HuuAzZpQ8Qv1w6rBaxBrlTq8VGRoM3b-BWcuKsAYvUapiBwR23hAFLnBKAJ057sCkGZjG-KEJQBzRZutNBdiXcSZwRFxiDRL_eevb-_Zn915SDC1RrxV32k_u79TeYM83nh9_mVcNR0rwyyAiX4SXRNwCaOeQ-jIel1kiI3kDqERMNJzK6NgDbPtjKcO23BraNeoom3boHDt3gatMogWkNTNad20PiJto4Y9cXJcQSGsXkfAA_qRLql1Y8oEmVOBfn6JqlhD9bNEfwLXNzfwuT9d3NfTJyy7MOvquuK4HLrcqhVosS1uyAAcgvGsF8_N4mqyqBDfK0xKi1g8p8hileCStudcOOQ6dKyS0fRDqR_ckx4drNzaSln3P8NRl57l5htsM7I3UafG-Eak-t0rOy3GP1CI4Q8NPhG9wbp0pXi3OG_eKAjFNF3Qxqoyq0No9z1uEx4zRPcx5mkDBstLfE-fMw_5cr7Z3nNdbQQ1WAHZIF6lUHakYMtkaJC7EZhjofpEjyOdLIZGcNnKvdtU4eGddXg4ywa9SB13jFtW9Ap9aV33sbNt_vBv5kzz5-yLbsR7ZVgfiXHJw1UaERpCLX46w-xoXrmxjNU-e45d6-V9hg-BfjFMTGIJkMtlFKe84c0wKrPZPcCpgI9g_8DowIhabukOmu_1-mv5w4xxdsLKb8f6nUTlyCh68kTFTDBacE2CH3wqyEbtDx0GSiMapucToDdD6j4_qWo_2yvg2cDNq2ofNsg6BkOuHkyD3v3THhDwt5DIch2_ojLkd7d1UBLxDHZDDsXDxfuqgjInhbXwhgnM8L9CvSVyMx3rzO63_iMxoX08ItCcZr97v27F03Be1R4KYo3WPNzOOm2MgXZ8daUuujrIqSTIvTwqh2t-9eWu3GvfvPK8otcx06Ldx_0N9KiWj08i8TEl4_)
+![Sequence Diagram](https://mermaid.ink/svg/pako:eNqdVm1v2kgQ_isjSz0RCQKEkIA_VApQnaJrmlypVPXEl8UeYBV7191dk3IR__32zWAb0_TKF2zvzOzMM888u69BxGMMwkDi9xxZhDNK1oKkCwb6RyLFBUxzqXiKwn3LiFA0ohlhCh74kiYIRBZPd1l2avXxYW5MzN8cxZZGeGoznVgb89f669sU_oAvgjCpE6CcyYuGrWkcJ_hCREOwecQFZesPbE2Zzc5_APfl1GE2cTWwNZ9NFswZvHsH94wqShKQqPIMOiBwTaVCGys9JAAvVG1A-j2wtMcnrhD4FkUp3XYluxAeGXYUTdFt4vyO1p3372v2n30OeqM441Rn33p6nH-BLslod9vvRglFprqRQKJwal88fJVAHR35uI0Jq3LBwHmD4s_IGnKZTUKYky022B1AK-gCMl_KSNDMtBBWCX9xJsW6ScCyRmOQIQOSZUBYXLgtPYbORhtr_oTgSk04Yd1K-Fbko37K0yUKX7F20Y6aVCH8naPYgaHW3dM9tOaPd0_eSC93ivAFCkUJlK14OdShfhPILIqUmP2PNqWqfLBKnlIRlctKZSZDv18IMyqzhOyqThFnK1rZ6QD2R42EpqWeXal-jvFnb2SwewPZIl4N1Lb1vUt5fqDUEZXpBqNn0ICAmSIzCMbYVzqb1BE2ixUwvOAkypZkqIrAuNK1kXh3Bl6Zcc0XxSGXulcttUHtRCUQF36JJo1M8AilxPjiPOq_GQoTiTWt0PNuW-JnrYxSbY4d3l41utR7W5ra6ruvVfT3Z4a4jGppHD1YB8LaJVOgrUerXblNvhwWH6qpKiasUUlQR0WGmCgCK8HTEyGuJlgXGUeseqQGpSkNbfkkODe9DVL25iYNPRF8S2M843ocOn2SRYbv0hLe9BB_0uk_P5Qa_b3UYNuTfZ3_jdw_33pn7ql5oFz19LGGXwlVVmAFKlEKm3CeGcw00ilGG8KoTKGVkh8wBKIUppkqDuDi9_tlVnhm5sfn_0ulFoJqPUwllssJTamqMfh4GPE0S1DjkJSEslHRnSLZ0GVdatb0crRf1vSKk0CZJ6qerRXRkjZqCdbPG300mgOS7exFgazM8V-OdnFW9U8iNkm_7Zw7U4tdG4T_Pj4RfTefJ9HPyH2MitDkbVz_F57OOGgHeiklNNZX2Vfjugi0hqe4CEL9GBPxvAgWbK_tSK74fMeiIFQix3YgeL7eFC95pse9uAMH4YpohrYDfUf8h_O0MNKvQfga_AjC_vX4cjQcXA36g_GgPx72rtrBLghve5e96_F4cD26Gtzc9G6H-3bwrw3Quxxd9_u314PhaDy8vRmMxu0AY6pv2Q_uGm5v4_v_AMMZ1Z0)
+
+## Screencast
+
+![Explanation Video]()
 
 
 

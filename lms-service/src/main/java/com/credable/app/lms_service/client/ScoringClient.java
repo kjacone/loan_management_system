@@ -2,6 +2,7 @@ package com.credable.app.lms_service.client;
 
 import com.credable.app.lms_service.model.ScoreResponse;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +56,7 @@ public class ScoringClient {
      * @param token
      * @return
      */
+    @Retry(name = "scoringService", fallbackMethod = "fallbackGetScoring")
     public ScoreResponse getScore(String token) {
         try {
             String url = scoringApiUrl + "/scoring/queryScore/" + token;

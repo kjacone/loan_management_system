@@ -1,9 +1,11 @@
 package com.credable.app.middleware_service.config;
 import com.credable.app.middleware_service.model.ScoringProperties;
 import com.credable.app.middleware_service.model.ScoringRegistrationResponse;
+import com.credable.app.middleware_service.model.ServiceType;
 import com.credable.app.middleware_service.repository.ScoringCredentialsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
@@ -25,12 +27,13 @@ public class ScoringRegistrationConfig {
 
     private final WebClient webClient;
     private final ScoringProperties scoringProperties;
+
     private final ScoringCredentialsRepository scoringCredentialsRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void registerWithScoringEngine() {
         // Check if already registered
-        if (scoringCredentialsRepository.isRegistered()) {
+        if (scoringCredentialsRepository.existsByName(scoringProperties.getServiceName())) {
             log.info("Middleware service already registered with scoring engine");
             return;
         }
@@ -52,12 +55,18 @@ public class ScoringRegistrationConfig {
 
             if (response != null) {
                 // Save credentials for future use
-                scoringCredentialsRepository.saveCredentials(response);
+               var save = ScoringRegistrationResponse.builder()
+//                       .id(response.getId())
+                        .token(response.getToken())
+                        .name(response.getName())
+                        .type(ServiceType.SCORING_SERVICE)
+                        .build();
+                scoringCredentialsRepository.save(save);
                 log.info("Successfully registered middleware service with scoring engine. Client ID: {}", response.getId());
             }
         } catch (Exception e) {
             log.error("Failed to register with scoring engine: {}", e.getMessage(), e);
             // Consider whether to fail startup or continue with degraded functionality
-        }
+               }
      }
 }
